@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
 public class AlarmController : MonoBehaviour
@@ -6,37 +8,45 @@ public class AlarmController : MonoBehaviour
     [SerializeField] private float _maxVolume;
     [SerializeField] private float _speedVolumeChange;
 
-    private bool _isActivated = false;
     private AudioSource _audioSource;
     private float _currentVolume = 0;
     private float _minVolume = 0;
+    private Coroutine _changeVolumeJob;
 
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-    }
-
-    private void Update()
-    {
-        if (_isActivated)
-        {
-            _currentVolume = Mathf.MoveTowards(_currentVolume, _maxVolume, _speedVolumeChange * Time.deltaTime);
-            _audioSource.volume = _currentVolume;
-        }
-        else
-        {
-            _currentVolume = Mathf.MoveTowards(_currentVolume, _minVolume, _speedVolumeChange * Time.deltaTime);
-            _audioSource.volume = _currentVolume;
-        }
+        _audioSource.volume = _currentVolume;
     }
 
     public void Activate()
     {
-        _isActivated = true;
+        if (_changeVolumeJob != null)
+        {
+            StopCoroutine(_changeVolumeJob);
+        }
+
+        _changeVolumeJob = StartCoroutine(ChangeVolume(_maxVolume));
     }
 
     public void Deactivate()
     {
-        _isActivated = false;
+        if (_changeVolumeJob != null)
+        {
+            StopCoroutine(_changeVolumeJob);
+        }
+
+        _changeVolumeJob = StartCoroutine(ChangeVolume(_minVolume));
+    }
+
+    private IEnumerator ChangeVolume(float targetVolume)
+    {
+        while (Math.Abs(_currentVolume - targetVolume) >= 0.0001)
+        {
+            _currentVolume = Mathf.MoveTowards(_currentVolume, targetVolume, _speedVolumeChange * Time.deltaTime);
+            _audioSource.volume = _currentVolume;
+
+            yield return null;
+        }
     }
 }

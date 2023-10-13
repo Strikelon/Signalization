@@ -41,9 +41,10 @@ public class AlarmController : MonoBehaviour
 
     private IEnumerator ChangeVolume(float targetVolume)
     {
-        while (Math.Abs(_currentVolume - targetVolume) >= 0.0001)
+        while (_currentVolume != targetVolume)
         {
-            _currentVolume = Mathf.MoveTowards(_currentVolume, targetVolume, _speedVolumeChange * Time.deltaTime);
+            _currentVolume = Mathf.MoveTowards(_currentVolume,
+                targetVolume, _speedVolumeChange * Time.deltaTime);
             _audioSource.volume = _currentVolume;
 
             yield return null;

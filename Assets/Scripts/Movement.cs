@@ -3,6 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Movement : MonoBehaviour
 {
+    private const string BearSpeed = "BearSpeed";
+    private const string Idle = "IsGrounded";
+
     [SerializeField] private float _speed;
 
     private Animator _animator;
@@ -23,7 +26,7 @@ public class Movement : MonoBehaviour
                 _isFacingRight = true;
             }
 
-            _animator.SetFloat("BearSpeed", _speed);
+            _animator.SetFloat(BearSpeed, _speed);
         }
 
         if (Input.GetKey(KeyCode.D))
@@ -33,8 +36,8 @@ public class Movement : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.D))
         {
-            _animator.SetFloat("BearSpeed", 0);
-            _animator.Play("Idle");
+            _animator.SetFloat(BearSpeed, 0);
+            _animator.Play(Idle);
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -46,7 +49,7 @@ public class Movement : MonoBehaviour
             }
 
             transform.Translate(_speed * Time.deltaTime * (-1), 0, 0);
-            _animator.SetFloat("BearSpeed", _speed);
+            _animator.SetFloat(BearSpeed, _speed);
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -56,8 +59,8 @@ public class Movement : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.A))
         {
-            _animator.SetFloat("BearSpeed", 0);
-            _animator.Play("Idle");
+            _animator.SetFloat(BearSpeed, 0);
+            _animator.Play(Idle);
         }
     }
 
